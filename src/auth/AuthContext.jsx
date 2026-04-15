@@ -11,7 +11,6 @@ import {
 } from "./neonAuthClient";
 
 const AuthContext = createContext(null);
-
 function decodeJwtPayload(token) {
   if (!token) return null;
   try {
