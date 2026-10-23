@@ -59,15 +59,16 @@ export default function App() {
         }
       />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      {/* The old capture placeholder now lives in the new-note flow. */}
+      <Route path="/capture" element={<Navigate to="/backpacks?for=note" replace />} />
       <Route
-        path="/"
+        path="/*"
         element={
           <ProtectedRoute>
             <AppHome />
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

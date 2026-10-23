@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { useAuth } from "../auth/AuthContext";
+import { saveRecentEmail } from "../auth/recentEmailStore";
 
 export default function SignupPage() {
   const { signUp, signIn, signInWithProvider, providerAvailability } = useAuth();
@@ -28,6 +29,7 @@ export default function SignupPage() {
     try {
       const result = await signUp({ email, password });
       if (result?.access_token) {
+        saveRecentEmail(email);
         navigate("/", { replace: true });
         return;
       }
@@ -36,6 +38,7 @@ export default function SignupPage() {
       setInfo("Account created. Check your email to confirm your account, then sign in.");
       try {
         await signIn({ email, password });
+        saveRecentEmail(email);
         navigate("/", { replace: true });
       } catch {
         // Silent, user may need to confirm email first.

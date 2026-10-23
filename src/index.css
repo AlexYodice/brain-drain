@@ -408,6 +408,34 @@ textarea::placeholder {
   color: #d9fbe8;
 }
 
+.auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.auth-inline-fill-button {
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: rgba(0, 230, 118, 0.08);
+  color: #d8ffeb;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.auth-inline-fill-button:hover:not(:disabled) {
+  border-color: rgba(0, 230, 118, 0.7);
+  background: rgba(0, 230, 118, 0.16);
+}
+
+.auth-inline-fill-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .auth-form input {
   width: 100%;
   padding: 10px 11px;
@@ -487,6 +515,49 @@ textarea::placeholder {
   margin: 0;
   color: #f4cf8d;
   font-size: 0.84rem;
+}
+
+.auth-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.auth-recent-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #232323;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.auth-recent-email {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #e9fff4;
+  font-size: 0.92rem;
+}
+
+.auth-recent-button {
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 230, 118, 0.35);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: rgba(0, 230, 118, 0.08);
+  color: #d8ffeb;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.auth-recent-button:hover {
+  border-color: rgba(0, 230, 118, 0.7);
+  background: rgba(0, 230, 118, 0.16);
 }
 
 .auth-error {

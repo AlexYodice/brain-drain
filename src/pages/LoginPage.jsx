@@ -1,18 +1,26 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthShell from "./AuthShell";
 import { useAuth } from "../auth/AuthContext";
+import { readRecentEmails, saveRecentEmail } from "../auth/recentEmailStore";
 
 export default function LoginPage() {
   const { signIn, signInWithProvider, providerAvailability } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const passwordInputRef = useRef(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState("");
+  const [recentEmails, setRecentEmails] = useState([]);
   const from = location.state?.from?.pathname ?? "/";
+  const primaryRecentEmail = recentEmails[0] ?? "";
+
+  useEffect(() => {
+    setRecentEmails(readRecentEmails());
+  }, []);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -20,6 +28,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn({ email, password });
+      saveRecentEmail(email);
+      setRecentEmails(readRecentEmails());
       navigate(from, { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to sign in.");
@@ -41,6 +51,12 @@ export default function LoginPage() {
       setError(err instanceof Error ? err.message : "Unable to start social sign in.");
       setOauthLoading("");
     }
+  }
+
+  function handleAutofillEmail(nextEmail) {
+    setEmail(nextEmail);
+    setError("");
+    passwordInputRef.current?.focus();
   }
 
   return (
@@ -83,7 +99,34 @@ export default function LoginPage() {
       </div>
       <div className="auth-divider"><span>or use email</span></div>
       <form className="auth-form" onSubmit={handleSubmit}>
-        <label htmlFor="email">Email</label>
+        {recentEmails.length > 0 && (
+          <div className="auth-recent-list" aria-label="Recent account emails">
+            {recentEmails.map((recentEmail) => (
+              <div className="auth-recent-item" key={recentEmail}>
+                <span className="auth-recent-email">{recentEmail}</span>
+                <button
+                  className="auth-recent-button"
+                  type="button"
+                  onClick={() => handleAutofillEmail(recentEmail)}
+                >
+                  Use
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="auth-label-row">
+          <label htmlFor="email">Email</label>
+          <button
+            className="auth-inline-fill-button"
+            type="button"
+            onClick={() => handleAutofillEmail(primaryRecentEmail)}
+            disabled={!primaryRecentEmail}
+            title={primaryRecentEmail ? `Use ${primaryRecentEmail}` : "No saved email yet"}
+          >
+            {primaryRecentEmail ? "Use saved" : "No saved email"}
+          </button>
+        </div>
         <input
           id="email"
           type="email"
@@ -96,6 +139,7 @@ export default function LoginPage() {
         <label htmlFor="password">Password</label>
         <input
           id="password"
+          ref={passwordInputRef}
           type="password"
           autoComplete="current-password"
           required
